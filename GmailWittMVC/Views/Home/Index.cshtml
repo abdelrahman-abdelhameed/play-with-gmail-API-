@@ -1,0 +1,70 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+
+<style>
+    #customers {
+        font-family: Arial, Helvetica, sans-serif;
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+        #customers td, #customers th {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        #customers tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        #customers tr:hover {
+            background-color: #ddd;
+        }
+
+        #customers th {
+            padding-top: 12px;
+            padding-bottom: 12px;
+            text-align: left;
+            background-color: #04AA6D;
+            color: white;
+        }
+</style>
+@using Google.Apis.Gmail.v1.Data;
+@using System.Text
+@using Newtonsoft.Json.Linq
+
+@model List<Message>
+
+<table id="customers">
+    <thead>
+    <tr>
+        <th> message snippet </th>
+        <th> message tags </th>
+        <th> actions </th>
+
+    </tr>
+    </thead>
+
+    <tbody>
+
+
+    @foreach (var item in Model)
+    {
+        // string Color = item.LabelIds.Contains("UNREAD") ? "#5dcda347" : "";
+        <tr >
+
+
+            <td> @item.Snippet </td>
+
+            <td> @string.Join("-", item.LabelIds) </td>
+            <td>
+                <a asp-action="Message" asp-controller="Home" asp-route-Id="@item.Id" class="btn btn-info"> view Message </a>
+            </td>
+
+        </tr>
+    }
+    </tbody>
+
+</table>

@@ -1,0 +1,66 @@
+@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+
+@using System.Text
+@model Google.Apis.Gmail.v1.Data.Message
+
+@if (Model != null)
+{
+    
+    <div class="row">
+        <div class="col-md-12">
+            <a asp-action="index" asp-controller="Home" class="btn btn-dark"> back </a>
+        </div>
+
+        <div class="col-md-12">
+            <div class="col-md-4">
+                Email From : @Model.Payload?.Headers?.Where(a => a.Name == "From").FirstOrDefault()?.Value
+            </div>
+            <div class="col-md-4">
+                Email Date : @Model.Payload?.Headers?.Where(a => a.Name == "Date").FirstOrDefault()?.Value
+            </div>
+            <div class="col-md-4">
+                Email Subject : @Model.Payload?.Headers?.Where(a => a.Name == "Subject").FirstOrDefault()?.Value
+
+            </div>
+        </div>
+        <div class="col-md-12">
+
+
+            @if (Model.Payload != null && Model.Payload.Body != null)
+            {
+                <div>
+                    @Html.Raw(Model.Payload?.Body?.Data)
+                </div>
+            }
+
+            @if (Model.Payload != null && Model.Payload.Parts != null)
+            {
+      
+                 foreach (var item in Model.Payload.Parts)
+                 {
+                     byte[] data = GmailWittMVC.Utilities.EmailConverterHelper.Base64UrlDecode(item.Body?.Data);
+                     string decodedString = Encoding.UTF8.GetString(data);
+                     string _html = GmailWittMVC.Utilities.EmailConverterHelper.GetUntilOrEmpty(decodedString);
+                     <div>
+
+                         @Html.Raw(_html)
+                     </div>
+                } 
+            }
+
+
+
+           
+        </div>
+
+    </div>
+}
+else
+{
+    <div class="row">
+        <h1> No Data ! </h1>
+    </div>
+}
